@@ -13,6 +13,12 @@ void Error_Handler(void)
   {
   }
 }
+#define My_HAL_RCC_GPIOC_CLK_ENABLE(void) do { \
+    __IO uint32_t tempReg; \
+    SET_BIT(RCC->AHBENR, RCC_AHBENR_GPIOCEN); \
+    tempReg = READ_BIT(RCC->AHBENR, RCC_AHBENR_GPIOCEN); \
+    UNUSED(tempReg); \
+} while(0U); 
 
 /**
   * @brief  System Clock Configuration
