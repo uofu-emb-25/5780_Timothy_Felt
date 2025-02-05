@@ -18,7 +18,6 @@ int main(void)
   #elif defined(LAB7)
   lab7_main();
   #else
-  #error No valid target specified
   #endif
 
 }
