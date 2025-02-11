@@ -17,7 +17,7 @@ int lab2_main(void){
 
     GPIOA->PUPDR |=(GPIO_PUPDR_PUPDR0_1);
     //PA0 by default is already in low-speed and in input mode. So no code is needed.
-
+    EXTI_INTERRUPT();
     while (1) {
         HAL_Delay(400);
         My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);

@@ -24,6 +24,12 @@ void My_HAL_RCC_GPIOC_CLK_ENABLE(){
     RCC->AHBENR |=(RCC_AHBENR_GPIOCEN);
 }
 
+void EXTI_INTERRUPT(){
+    EXTI->IMR |= (EXTI_IMR_IM0);
+    EXTI->RTSR |= (EXTI_RTSR_RT0);
+    NVIC_EnableIRQ(EXTI0_1_IRQn);
+
+}
 void My_HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
 {
 }
