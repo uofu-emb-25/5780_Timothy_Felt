@@ -3,6 +3,7 @@
 #include <hal_gpio.h>
 #include <stm32f0xx_it.h>
 #include <assert.h>
+#include <stdio.h>
 
 int lab2_main(void){
     HAL_Init;
@@ -23,6 +24,9 @@ int lab2_main(void){
     EXTI_INTERRUPT();
     assert(EXTI->IMR == 0x7F840001);
     assert(EXTI->RTSR == 0x00000001);
+    assert(SYSCFG->EXTICR[1] == 0x0000);
+    SYSCONFIG_ROUTE_PA0_EXTI0();
+    assert(SYSCFG->EXTICR[1] == 0x0000);
     while (1) {
         HAL_Delay(400);
         My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);

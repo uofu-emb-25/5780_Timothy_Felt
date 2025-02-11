@@ -30,6 +30,13 @@ void EXTI_INTERRUPT(){
     NVIC_EnableIRQ(EXTI0_1_IRQn);
 
 }
+
+void SYSCONFIG_ROUTE_PA0_EXTI0(){
+    RCC->APB2ENR |= (RCC_APB2ENR_SYSCFGCOMPEN);
+    //routing to from EXTI0 to PA0 doesnt need to be programmed as they are assigned to each other by default.
+
+
+}
 void My_HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
 {
 }
