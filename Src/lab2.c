@@ -2,6 +2,7 @@
 #include <stm32f0xx_hal.h>
 #include <hal_gpio.h>
 #include <stm32f0xx_it.h>
+#include <assert.h>
 
 int lab2_main(void){
     HAL_Init;
@@ -17,7 +18,11 @@ int lab2_main(void){
 
     GPIOA->PUPDR |=(GPIO_PUPDR_PUPDR0_1);
     //PA0 by default is already in low-speed and in input mode. So no code is needed.
+    assert(EXTI->IMR == 0x7F840000);
+    assert(EXTI->RTSR == 0x00000000);
     EXTI_INTERRUPT();
+    assert(EXTI->IMR == 0x7F840001);
+    assert(EXTI->RTSR == 0x00000001);
     while (1) {
         HAL_Delay(400);
         My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);
