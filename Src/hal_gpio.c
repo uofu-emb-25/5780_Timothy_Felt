@@ -52,8 +52,11 @@ void SYSCONFIG_ROUTE_PA0_EXTI0(){
 
 }
 void TIM2_IRQHandler() {
-    
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+    TIM2->SR &=~(TIM_SR_UIF);
 }
+
 void My_HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
 {
 }
