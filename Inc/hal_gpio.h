@@ -15,5 +15,7 @@ void EXTI_INTERRUPT(void);
 void SystemClock_Config(void);
 void My_HAL_TIMED_TogglePin();
 void TIM2_IRQHandler(void);
+void My_HAL_DIM_LED_TIM3(void);
+
 
 
