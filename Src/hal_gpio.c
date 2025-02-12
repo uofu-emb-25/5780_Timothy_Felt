@@ -38,6 +38,10 @@ void EXTI0_1_IRQHandler() {
     }
     My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
     My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+    volatile int wait = 1500000;
+    while (wait > 0){
+        wait--;
+    }
 
     }
 
