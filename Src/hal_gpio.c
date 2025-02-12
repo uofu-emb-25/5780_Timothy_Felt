@@ -51,6 +51,9 @@ void SYSCONFIG_ROUTE_PA0_EXTI0(){
 
 
 }
+void TIM2_IRQHandler() {
+    
+}
 void My_HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
 {
 }
@@ -90,4 +93,13 @@ void My_HAL_GPIO_TogglePin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
 
 
 }
+
+void My_HAL_TIMED_TogglePin(){
+    RCC->APB1ENR |= (RCC_APB1ENR_TIM2EN);
+    TIM2->PSC = 0x1F3F;
+    TIM2->ARR = 0x000000FA;
+    TIM2->DIER |= (TIM_DIER_UIE);
+    TIM2->CR1 |= (TIM_CR1_CEN);
+}
+
 
