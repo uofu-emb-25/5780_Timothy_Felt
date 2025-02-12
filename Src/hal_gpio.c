@@ -31,6 +31,16 @@ void EXTI_INTERRUPT(){
 
 }
 
+void EXTI0_1_IRQHandler() {
+    if (EXTI->PR & EXTI_PR_PR0){
+        EXTI->PR = EXTI_PR_PR0;
+
+    }
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
+    My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+
+    }
+
 void SYSCONFIG_ROUTE_PA0_EXTI0(){
     RCC->APB2ENR |= (RCC_APB2ENR_SYSCFGCOMPEN);
     //routing to from EXTI0 to PA0 doesnt need to be programmed as they are assigned to each other by default.
