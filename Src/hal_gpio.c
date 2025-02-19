@@ -135,10 +135,10 @@ void My_HAL_DIM_LED_TIM3(){
 void CREATE_TRANSMIT_RECEIVE(){
     GPIOC->MODER |= GPIO_MODER_MODER10_1;
     GPIOC->MODER |= GPIO_MODER_MODER11_1;
-    GPIOC->AFR[1] &= ~(0xF << 8);
-    GPIOC->AFR[1] &= ~(0xF << 12);
-    GPIOC->AFR[1] |=(0x01 << 8);
-    GPIOC->AFR[1] |=(0x01 << 12);
+    GPIOC->AFR[1] &= ~GPIO_AFRH_AFSEL10_Msk;
+    GPIOC->AFR[1] &= ~GPIO_AFRH_AFSEL11_Msk;
+    GPIOC->AFR[1] |= GPIO_AF1_USART3<<GPIO_AFRH_AFSEL10_Pos;
+    GPIOC->AFR[1] |= GPIO_AF1_USART3<<GPIO_AFRH_AFSEL11_Pos;
     RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
     USART3->BRR = HAL_RCC_GetHCLKFreq()/115200;
     USART3->CR1 |= USART_CR1_TE;
@@ -147,8 +147,13 @@ void CREATE_TRANSMIT_RECEIVE(){
 }
 
 void TRANSMIT_CHARACTER(char myChar){
-    while(!(USART3->ISR & (1 << 7))){
+    while(!(USART3->ISR & (1 << 6))){
     }
     USART3->TDR = myChar;
+}
+void Transmit_String(char myString[]){
+    for(int i = 0; i < strlen(myString); i++) {
+        TRANSMIT_CHARACTER(myString[i]);
+    }
 }
 

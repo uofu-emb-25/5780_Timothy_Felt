@@ -19,6 +19,7 @@ void My_HAL_DIM_LED_TIM3(void);
 void CREATE_TRANSMIT_RECEIVE(void);
 void TRANSMIT_CHARACTER(char myChar);
 void USART3_4_IRQHandler(void);
+void Transmit_String(char myString[]);
 
 
 
