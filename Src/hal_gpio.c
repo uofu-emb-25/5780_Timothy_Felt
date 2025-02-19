@@ -122,12 +122,12 @@ void My_HAL_DIM_LED_TIM3(){
     TIM3->CCER |= TIM_CCER_CC2E;
     TIM3->CCR1 = 5;
     TIM3->CCR2 = 50;
-    GPIOC->MODER &=~(0x3 << (2*7));
-    GPIOC->MODER &=~(0x3 << (2*6));
+    GPIOC->MODER &= ~(0x3 << 2*7);
+    GPIOC->MODER &= ~(0x3 << 2*6);
     GPIOC->MODER |= GPIO_MODER_MODER7_1;
     GPIOC->MODER |= GPIO_MODER_MODER6_1;
-    GPIOC->AFR[0] &=~(0x15 << (4*6));
-    GPIOC->AFR[0] &=~(0x15 << (4*7));
+    GPIOC->AFR[0] &= ~(0x15 << 4*6);
+    GPIOC->AFR[0] &= ~(0x15 << 4*7);
     TIM3->CR1 |= (TIM_CR1_CEN);
 
 }
@@ -135,15 +135,20 @@ void My_HAL_DIM_LED_TIM3(){
 void CREATE_TRANSMIT_RECEIVE(){
     GPIOC->MODER |= GPIO_MODER_MODER10_1;
     GPIOC->MODER |= GPIO_MODER_MODER11_1;
-    GPIOC->AFR[1] |=(0001 << (4*10));
-    GPIOC->AFR[1] |=(0001 << (4*11));
+    GPIOC->AFR[1] &= ~(0xF << 8);
+    GPIOC->AFR[1] &= ~(0xF << 12);
+    GPIOC->AFR[1] |=(0x01 << 8);
+    GPIOC->AFR[1] |=(0x01 << 12);
     RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
     USART3->BRR = HAL_RCC_GetHCLKFreq()/115200;
     USART3->CR1 |= USART_CR1_TE;
     USART3->CR1 |= USART_CR1_RE;
-
-
+    USART3->CR1 |= USART_CR1_UE;
 }
 
-
+void TRANSMIT_CHARACTER(char myChar){
+    while(!(USART3->ISR & (1 << 7))){
+    }
+    USART3->TDR = myChar;
+}
 
