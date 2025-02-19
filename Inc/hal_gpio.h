@@ -20,6 +20,7 @@ void CREATE_TRANSMIT_RECEIVE(void);
 void TRANSMIT_CHARACTER(char myChar);
 void USART3_4_IRQHandler(void);
 void Transmit_String(char myString[]);
+void Keystroke_Led_Toggle(void);
 
 
 

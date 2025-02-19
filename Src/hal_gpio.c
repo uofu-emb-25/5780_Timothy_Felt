@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stm32f0xx_hal.h>
 #include <stm32f0xx_hal_gpio.h>
+#include <stdio.h>
 
 void My_HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
 {
@@ -147,13 +148,39 @@ void CREATE_TRANSMIT_RECEIVE(){
 }
 
 void TRANSMIT_CHARACTER(char myChar){
-    while(!(USART3->ISR & (1 << 6))){
+    while(!(USART3->ISR & (1 << 7))){
     }
     USART3->TDR = myChar;
 }
 void Transmit_String(char myString[]){
     for(int i = 0; i < strlen(myString); i++) {
         TRANSMIT_CHARACTER(myString[i]);
+    }
+}
+void Keystroke_Led_Toggle(){
+    while(!(USART3->ISR & (1 << 5))){
+    }
+    char myChar = USART3->RDR;
+        GPIO_InitTypeDef initStr = {GPIO_PIN_7 | GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_9, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL};
+        My_HAL_GPIO_Init(GPIOC, &initStr);
+
+    if(myChar == 'r' || myChar == 'R'){
+        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);
+    }
+    else if(myChar == 'b' || myChar == 'B'){
+        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
+
+    }
+    else if(myChar == 'o' || myChar =='O'){
+        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
+
+    }
+    else if(myChar == 'g' || myChar =='G'){
+        My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
+
+    }
+    else{
+        Transmit_String("That is not a valid character");
     }
 }
 
