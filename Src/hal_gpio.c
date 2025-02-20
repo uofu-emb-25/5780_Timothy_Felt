@@ -158,6 +158,8 @@ void Transmit_String(char myString[]){
     }
 }
 void Keystroke_Led_Toggle(){
+     GPIO_InitTypeDef initStr = {GPIO_PIN_9 | GPIO_PIN_8 | GPIO_PIN_7 | GPIO_PIN_6, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL};
+    My_HAL_GPIO_Init(GPIOC, &initStr);
     Transmit_String("Input color: r for red, b for blue, g for green, o for orange");
     while(!(USART3->ISR & (1 << 5))){
     }
@@ -176,7 +178,7 @@ void Keystroke_Led_Toggle(){
         return;
     }
 
-    if(myChar == 'r' || myChar == 'R'){
+    if(myChar == 'r'){
         if(func == '0'){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
             Transmit_String("You turned off red");
@@ -191,7 +193,7 @@ void Keystroke_Led_Toggle(){
         }
 
     }
-    else if(myChar == 'b' || myChar == 'B'){
+    else if(myChar == 'b'){
         if(func == '0'){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
             Transmit_String("You turned off blue");
@@ -206,7 +208,7 @@ void Keystroke_Led_Toggle(){
         }
 
     }
-    else if(myChar == 'o' || myChar =='O'){
+    else if(myChar == 'o'){
         if(func == '0'){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
             Transmit_String("You turned off orange");
@@ -224,7 +226,7 @@ void Keystroke_Led_Toggle(){
         }
 
     }
-    else if(myChar == 'g' || myChar =='G'){
+    else if(myChar == 'g'){
         if(func == '0'){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
             Transmit_String("You turned off green");
@@ -243,5 +245,6 @@ void Keystroke_Led_Toggle(){
     else{
         Transmit_String("That is not a valid character");
     }
+
 }
 
