@@ -160,7 +160,7 @@ void Transmit_String(char myString[]){
 void Keystroke_Led_Toggle(){
      GPIO_InitTypeDef initStr = {GPIO_PIN_9 | GPIO_PIN_8 | GPIO_PIN_7 | GPIO_PIN_6, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL};
     My_HAL_GPIO_Init(GPIOC, &initStr);
-    Transmit_String("Input color: r for red, b for blue, g for green, o for orange");
+    Transmit_String("Input color: r for red, b for blue, g for green, o for orange \n");
     while(!(USART3->ISR & (1 << 5))){
     }
     char myChar = USART3->RDR;
@@ -169,7 +169,7 @@ void Keystroke_Led_Toggle(){
         
         return;
     }
-    Transmit_String("Input mode: 0 for off, 1 for on , 2 for toggle");
+    Transmit_String("Input mode: 0 for off, 1 for on , 2 for toggle \n");
     while(!(USART3->ISR & (1 <<5))){
     }
     char func = USART3->RDR;
@@ -181,47 +181,47 @@ void Keystroke_Led_Toggle(){
     if(myChar == 'r'){
         if(func == '0'){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-            Transmit_String("You turned off red");
+            Transmit_String("You turned off red \n");
         }
         else if (func == '1') {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
-            Transmit_String("You turned on red");
+            Transmit_String("You turned on red \n");
         }
         else if (func == '2') {
             My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);
-            Transmit_String("You toggled red");
+            Transmit_String("You toggled red \n");
         }
 
     }
     else if(myChar == 'b'){
         if(func == '0'){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-            Transmit_String("You turned off blue");
+            Transmit_String("You turned off blue \n");
         }
         else if (func == '1') {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
-            Transmit_String("You turned on blue");
+            Transmit_String("You turned on blue \n");
         }
         else if (func == '2') {
             My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
-            Transmit_String("You toggled blue");
+            Transmit_String("You toggled blue \n");
         }
 
     }
     else if(myChar == 'o'){
         if(func == '0'){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, 0);
-            Transmit_String("You turned off orange");
+            Transmit_String("You turned off orange \n");
 
         }
         else if (func == '1') {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
-            Transmit_String("You turned on orange");
+            Transmit_String("You turned on orange \n");
 
         }
         else if (func == '2') {
             My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_8);
-            Transmit_String("You toggled orange");
+            Transmit_String("You toggled orange \n");
 
         }
 
@@ -229,21 +229,21 @@ void Keystroke_Led_Toggle(){
     else if(myChar == 'g'){
         if(func == '0'){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, 0);
-            Transmit_String("You turned off green");
+            Transmit_String("You turned off green \n");
 
         }
         else if (func == '1') {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
-            Transmit_String("You turned on green");
+            Transmit_String("You turned on green \n");
         }
         else if (func == '2') {
             My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_9);
-            Transmit_String("You toggled green");
+            Transmit_String("You toggled green \n");
         }
 
     }
     else{
-        Transmit_String("That is not a valid character");
+        Transmit_String("That is not a valid character \n");
     }
 
 }
