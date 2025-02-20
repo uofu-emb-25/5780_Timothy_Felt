@@ -161,8 +161,6 @@ void Keystroke_Led_Toggle(){
     while(!(USART3->ISR & (1 << 5))){
     }
     char myChar = USART3->RDR;
-        GPIO_InitTypeDef initStr = {GPIO_PIN_7 | GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_9, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL};
-        My_HAL_GPIO_Init(GPIOC, &initStr);
 
     if(myChar == 'r' || myChar == 'R'){
         My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_6);
