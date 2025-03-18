@@ -247,4 +247,12 @@ void Keystroke_Led_Toggle(){
     }
 
 }
+void SetUpI2C(int readOrWrite){
+    I2C2->CR2 &= ~(0x69F6BC7);
+    I2C2->CR2 |= 0x6B;
+    I2C2->CR2 &= ~I2C_CR2_NBYTES;
+    I2C2->CR2 |= (1 << I2C_CR2_NBYTES_Pos);
+    I2C2->CR2 |= (readOrWrite << I2C_CR2_RD_WRN_Pos);
+    I2C2->CR2 |= (1 << I2C_CR2_START_Pos);
 
+}

@@ -1,7 +1,6 @@
 #include "main.h"
 #include <stm32f0xx_hal.h>
 #define LAB4
-#undef LAB1
 int main(void)
 {
   #if defined(LAB1)
