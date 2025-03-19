@@ -53,7 +53,7 @@ int lab5_main(void){
     I2C2->CR1 |= I2C_CR1_PE;
 
     //setup Transaction 
-    SetUpI2C(0);
+    SetUpI2C(0,1);
 
     while(1)
     {
@@ -70,7 +70,7 @@ int lab5_main(void){
         while(!(I2C2->ISR & I2C_ISR_TC))
         {
         }
-        SetUpI2C(1);
+        SetUpI2C(1,1);
 
         while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF)))
         {
@@ -86,7 +86,7 @@ int lab5_main(void){
         }
 
         I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
-        break;
+        EnableXandYGyro();
 
     }
 }

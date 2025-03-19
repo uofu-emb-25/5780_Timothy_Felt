@@ -247,12 +247,62 @@ void Keystroke_Led_Toggle(){
     }
 
 }
-void SetUpI2C(int readOrWrite){
+void SetUpI2C(int readOrWrite, int dataBytes){
     I2C2->CR2 &= ~(0x69F6BC7);
     I2C2->CR2 |= 0x69 << 1;
     I2C2->CR2 &= ~I2C_CR2_NBYTES;
-    I2C2->CR2 |= (1 << I2C_CR2_NBYTES_Pos);
+    I2C2->CR2 |= (dataBytes << I2C_CR2_NBYTES_Pos);
+    I2C2->CR2 &= ~I2C_CR2_RD_WRN;
     I2C2->CR2 |= (readOrWrite << I2C_CR2_RD_WRN_Pos);
     I2C2->CR2 |= (1 << I2C_CR2_START_Pos);
+
+}
+void EnableXandYGyro(void){
+    SetUpI2C(0,2);
+    while(!(I2C2->ISR & I2C_ISR_NACKF || I2C2->ISR & I2C_ISR_TXIS)){
+    }
+    if(I2C2->ISR & I2C_ISR_NACKF){
+        My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+        return;
+    }
+    if(I2C2->ISR & I2C_ISR_TXIS){
+        I2C2->TXDR = 0x20;
+    }
+    while(!(I2C2->ISR & I2C_ISR_NACKF || I2C2->ISR & I2C_ISR_TXIS)){
+    }
+    if(I2C2->ISR & I2C_ISR_NACKF){
+        My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+        return;
+    }
+    if(I2C2->ISR & I2C_ISR_TXIS){
+        I2C2->TXDR = 0xB;
+    }
+    while(!(I2C2->ISR & I2C_ISR_TC))
+    {}
+    SetUpI2C(0,1);
+    while(!(I2C2->ISR & I2C_ISR_NACKF || I2C2->ISR & I2C_ISR_TXIS)){
+    }
+    if(I2C2->ISR & I2C_ISR_NACKF){
+        My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+        return;
+    }
+    if(I2C2->ISR & I2C_ISR_TXIS){
+        I2C2->TXDR = 0x20;
+    }
+
+    while(!(I2C2->ISR & I2C_ISR_TC)){
+    }
+
+    SetUpI2C(1,1);
+    while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF))){
+    }
+    uint32_t myAddress = I2C2->RXDR;
+
+    while(!(I2C2->ISR & I2C_ISR_TC)){
+    }
+    I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
+
+
+
 
 }
