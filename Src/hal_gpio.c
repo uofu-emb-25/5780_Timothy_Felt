@@ -294,15 +294,53 @@ void EnableXandYGyro(void){
     }
 
     SetUpI2C(1,1);
-    while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF))){
+    while(!(I2C2->ISR & (I2C_ISR_RXNE || I2C_ISR_NACKF))){
     }
     uint32_t myAddress = I2C2->RXDR;
 
     while(!(I2C2->ISR & I2C_ISR_TC)){
     }
     I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
+}
+int16_t GetGyroValue(char myDir){
+    //set up to read myDir low and high
 
+    //start with write transfer of 1 byte
+    SetUpI2C(0,1);
+    while(!(I2C2->ISR & I2C_ISR_NACKF || I2C2->ISR & I2C_ISR_TXIS)){}
+    if(I2C2->ISR & I2C_ISR_NACKF){
+        return 0;
+    }
+    if(I2C2->ISR & I2C_ISR_TXIS){
+        if(myDir == 'x' || myDir == 'X') {
+            I2C2->TXDR = 0xA8;
+            while(!(I2C2->ISR & I2C_ISR_TC)){}
+            SetUpI2C(1,2);
+            while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF))){}
+            int16_t xLow = I2C2->RXDR;
+            while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF))){}
+            int16_t xHigh = I2C2->RXDR;
+            while(!(I2C2->ISR & I2C_ISR_TC)){}
+            I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
 
+            int16_t xTotal = (xHigh << 8) | xLow;
+            return xTotal;
 
+        }
+        else if(myDir == 'y' || myDir == 'Y'){
+            I2C2->TXDR = 0xAA;
+            while(!(I2C2->ISR & I2C_ISR_TC)){}
+            SetUpI2C(1,2);
+            while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF))){}
+            int16_t yLow = I2C2->RXDR;
+            while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF))){}
+            int16_t yHigh = I2C2->RXDR;
+            while(!(I2C2->ISR & I2C_ISR_TC)){}
+            I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
 
+            int16_t yTotal = (yHigh << 8) | yLow;
+            return yTotal;
+        }
+    }
+    return 0;
 }

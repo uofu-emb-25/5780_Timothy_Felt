@@ -4,6 +4,11 @@
 #include <stdio.h>
 
 int lab5_main(void){
+
+    HAL_Init();
+    SystemClock_Config;
+    My_HAL_RCC_GPIOC_CLK_ENABLE();
+
     //initialize I2C GPIO pins
     RCC->AHBENR |=(RCC_AHBENR_GPIOBEN);
     RCC->AHBENR |=(RCC_AHBENR_GPIOCEN);
@@ -33,7 +38,7 @@ int lab5_main(void){
     GPIOC->MODER |= (0x1);
     My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
 
-    //Initialize and set up orange, red, and green leds.
+    //Initialize and set up orange, blue, red, and green leds.
     GPIO_InitTypeDef initStr = {GPIO_PIN_8 | GPIO_PIN_6 | GPIO_PIN_9 | GPIO_PIN_7, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL};
     My_HAL_GPIO_Init(GPIOC, &initStr);
 
@@ -53,9 +58,9 @@ int lab5_main(void){
     I2C2->CR1 |= I2C_CR1_PE;
 
     //setup Transaction 
-    SetUpI2C(0,1);
+    /*SetUpI2C(0,1);
 
-    while(1)
+     while(1)
     {
         while(!(I2C2->ISR & I2C_ISR_NACKF || I2C2->ISR & I2C_ISR_TXIS)){
         }
@@ -88,5 +93,59 @@ int lab5_main(void){
         I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
         EnableXandYGyro();
 
+    } */
+    int32_t myX = 0;
+    int32_t myY = 0;
+    CREATE_TRANSMIT_RECEIVE();
+    EnableXandYGyro();
+    Transmit_String("Starting Transaction. \n");
+    while (1){
+        int32_t gyroX = GetGyroValue('x');
+        if (gyroX > 250 || gyroX < -250){
+            myX += gyroX;
+        }
+        char xVal[12];
+        sprintf(xVal, "%d", myX);
+        Transmit_String("X is ");
+        Transmit_String(xVal);
+        TRANSMIT_CHARACTER('\n');
+        if (myX > 10000)
+        {
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
+        }
+        else if (myX > -10000)
+        {
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+        }
+        else{
+            Transmit_String("failed");
+        }
+
+        int32_t gyroY = GetGyroValue('y');
+        if (gyroY > 250 || gyroY < -250){
+            myY += gyroY;
+        }
+        char yVal[12];
+        sprintf(yVal, "%d", myY);
+        Transmit_String("Y is ");
+        Transmit_String(yVal);
+        TRANSMIT_CHARACTER('\n');
+        if (myY > 10000)
+        {
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+        }
+        else if (myY > -10000)
+        {
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+        }
+        else{
+            Transmit_String("failed");
+        }
+       
+       HAL_Delay(100);
     }
 }
