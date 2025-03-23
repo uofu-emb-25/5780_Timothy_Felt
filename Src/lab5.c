@@ -94,56 +94,64 @@ int lab5_main(void){
         EnableXandYGyro();
 
     } */
-    int32_t myX = 0;
-    int32_t myY = 0;
+    int16_t myX = 0;
+    int16_t myY = 0;
+    int16_t upperCutOff = 10;
+    int16_t lowerCutOff = -10;
     CREATE_TRANSMIT_RECEIVE();
     EnableXandYGyro();
     Transmit_String("Starting Transaction. \n");
     while (1){
-        int32_t gyroX = GetGyroValue('x');
-        if (gyroX > 250 || gyroX < -250){
-            myX += gyroX;
-        }
-        char xVal[12];
-        sprintf(xVal, "%d", myX);
+        int16_t gyroX = GetGyroValue('x');
+        //if (gyroX > 250 || gyroX < -250){
+            myX = gyroX;
+        //}
+        char xVal[16];
+        sprintf(xVal, "%d", gyroX);
         Transmit_String("X is ");
         Transmit_String(xVal);
         TRANSMIT_CHARACTER('\n');
-        if (myX > 10000)
+        if (myX > upperCutOff)
         {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
+            Transmit_String("MyX > 10 \n");
         }
-        else if (myX > -10000)
+        else if (myX < lowerCutOff)
         {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_RESET);
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+            Transmit_String("MyX < -10 \n");
         }
         else{
-            Transmit_String("failed");
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_RESET);
+            Transmit_String("Failed Case \n");
         }
 
-        int32_t gyroY = GetGyroValue('y');
-        if (gyroY > 250 || gyroY < -250){
-            myY += gyroY;
-        }
-        char yVal[12];
-        sprintf(yVal, "%d", myY);
+        int16_t gyroY = GetGyroValue('y');
+        //if (gyroY > 250 || gyroY < -250){
+            myY = gyroY;
+        //}
+        char yVal[16];
+        sprintf(yVal, "%d", gyroY);
         Transmit_String("Y is ");
         Transmit_String(yVal);
         TRANSMIT_CHARACTER('\n');
-        if (myY > 10000)
+        if (myY >upperCutOff)
         {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
+            Transmit_String("MyY > 10 \n");
         }
-        else if (myY > -10000)
+        else if (myY < lowerCutOff)
         {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+            Transmit_String("MyY < -10 \n");
         }
         else{
-            Transmit_String("failed");
+            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6 | GPIO_PIN_7, GPIO_PIN_RESET);
+            Transmit_String("Failed Case \n");
         }
        
        HAL_Delay(100);
