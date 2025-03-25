@@ -23,7 +23,6 @@ void Transmit_String(char myString[]);
 void Keystroke_Led_Toggle(void);
 void SetUpI2C(int readOrWrite, int dataBytes);
 void EnableXandYGyro(void);
-char GetGyroValue(char myDir);
 
 
 

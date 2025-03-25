@@ -4,15 +4,14 @@
 #include <stdio.h>
 
 int lab5_main(void){
-
     HAL_Init();
-    SystemClock_Config;
-    My_HAL_RCC_GPIOC_CLK_ENABLE();
+    SystemClock_Config();
 
     //initialize I2C GPIO pins
     RCC->AHBENR |=(RCC_AHBENR_GPIOBEN);
     RCC->AHBENR |=(RCC_AHBENR_GPIOCEN);
     RCC->APB1ENR |=(RCC_APB1ENR_I2C2EN);
+    
 
     //Initialize pin B11 and set it up
     GPIOB->MODER &= ~(0x3 << (11*2));
@@ -38,7 +37,7 @@ int lab5_main(void){
     GPIOC->MODER |= (0x1);
     My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_SET);
 
-    //Initialize and set up orange, blue, red, and green leds.
+    //Initialize and set up orange, red, and green leds.
     GPIO_InitTypeDef initStr = {GPIO_PIN_8 | GPIO_PIN_6 | GPIO_PIN_9 | GPIO_PIN_7, GPIO_MODE_OUTPUT_PP, GPIO_SPEED_FREQ_LOW, GPIO_NOPULL};
     My_HAL_GPIO_Init(GPIOC, &initStr);
 
@@ -58,53 +57,53 @@ int lab5_main(void){
     I2C2->CR1 |= I2C_CR1_PE;
 
     //setup Transaction 
-    /*SetUpI2C(0,1);
+    //SetUpI2C(0,1);
 
-     while(1)
-    {
-        while(!(I2C2->ISR & I2C_ISR_NACKF || I2C2->ISR & I2C_ISR_TXIS)){
-        }
+    // while(1)
+    // {
+    //     while(!(I2C2->ISR & I2C_ISR_NACKF || I2C2->ISR & I2C_ISR_TXIS)){
+    //     }
 
-        if(I2C2->ISR & I2C_ISR_NACKF){
-            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
-            break;
-        }
-        if(I2C2->ISR & I2C_ISR_TXIS){
-            I2C2->TXDR = 0x0F;
-        }
-        while(!(I2C2->ISR & I2C_ISR_TC))
-        {
-        }
-        SetUpI2C(1,1);
+    //     if(I2C2->ISR & I2C_ISR_NACKF){
+    //         My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_SET);
+    //         break;
+    //     }
+    //     if(I2C2->ISR & I2C_ISR_TXIS){
+    //         I2C2->TXDR = 0x0F;
+    //     }
+    //     while(!(I2C2->ISR & I2C_ISR_TC))
+    //     {
+    //     }
+    //     SetUpI2C(1,1);
 
-        while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF)))
-        {
-        }
-        int myReg = I2C2->RXDR;
-        while(!(I2C2->ISR & I2C_ISR_TC))
-        {}
-        if(myReg == 0xD3){
-            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
-        }
-        else{
-            My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
-        }
+    //     while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF)))
+    //     {
+    //     }
+    //     int myReg = I2C2->RXDR;
+    //     while(!(I2C2->ISR & I2C_ISR_TC))
+    //     {}
+    //     if(myReg == 0xD3){
+    //         My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_SET);
+    //     }
+    //     else{
+    //         My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_8, GPIO_PIN_SET);
+    //     }
 
-        I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
-        EnableXandYGyro();
+    //     I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
+    //     EnableXandYGyro();
+    // }
 
-    } */
     int16_t myX = 0;
     int16_t myY = 0;
-    int16_t upperCutOff = 10;
-    int16_t lowerCutOff = -10;
+    int16_t upperCutOff = 45;
+    int16_t lowerCutOff = -45;
     CREATE_TRANSMIT_RECEIVE();
     EnableXandYGyro();
     Transmit_String("Starting Transaction. \n");
     while (1){
         int16_t gyroX = GetGyroValue('x');
         //if (gyroX > 250 || gyroX < -250){
-            myX = gyroX;
+            myX += gyroX;
         //}
         char xVal[16];
         sprintf(xVal, "%d", gyroX);
@@ -130,7 +129,7 @@ int lab5_main(void){
 
         int16_t gyroY = GetGyroValue('y');
         //if (gyroY > 250 || gyroY < -250){
-            myY = gyroY;
+            myY += gyroY;
         //}
         char yVal[16];
         sprintf(yVal, "%d", gyroY);
@@ -143,7 +142,7 @@ int lab5_main(void){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
             Transmit_String("MyY > 10 \n");
         }
-        else if (myY > lowerCutOff)
+        else if (myY < lowerCutOff)
         {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);

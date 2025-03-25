@@ -294,7 +294,7 @@ void EnableXandYGyro(void){
     }
 
     SetUpI2C(1,1);
-    while(!(I2C2->ISR & (I2C_ISR_RXNE || I2C_ISR_NACKF))){
+    while(!(I2C2->ISR & (I2C_ISR_RXNE | I2C_ISR_NACKF))){
     }
     uint16_t myAddress = I2C2->RXDR;
 
@@ -302,6 +302,8 @@ void EnableXandYGyro(void){
     }
     I2C2->CR2 |= (1 << I2C_CR2_STOP_Pos);
 }
+
+
 int16_t GetGyroValue(char myDir){
     //set up to read myDir low and high
 
