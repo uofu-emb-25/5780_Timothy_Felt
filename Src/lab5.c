@@ -143,7 +143,7 @@ int lab5_main(void){
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
             Transmit_String("MyY > 10 \n");
         }
-        else if (myY < lowerCutOff)
+        else if (myY > lowerCutOff)
         {
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, GPIO_PIN_RESET);
             My_HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
