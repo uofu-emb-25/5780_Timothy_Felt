@@ -343,3 +343,36 @@ int16_t GetGyroValue(char myDir){
     }
     return 0;
 }
+
+void SetUpADC(void){
+    GPIOC->MODER |= 0x3;
+    RCC->APB2ENR |= RCC_APB2ENR_ADCEN;
+    ADC1->CFGR1 |= (0x2 << 3);
+    ADC1->CFGR1 |= ADC_CFGR1_CONT;
+    ADC1->CHSELR |= ADC_CHSELR_CHSEL10;
+    if ((ADC1->CR |= ADC_CR_ADEN)!= 0)
+    {
+        ADC1->CR |= ADC_CR_ADDIS;
+    }
+
+    ADC1->CFGR1 &= ~ADC_CFGR1_DMAEN;
+    ADC1->CR |= ADC_CR_ADCAL;
+    while((ADC1->CR & ADC_CR_ADCAL) != 0)
+    {
+    }
+
+    ADC1->CR |= ADC_CR_ADEN;
+    while((ADC1->ISR & ADC_ISR_ADRDY) == 0)
+    {
+    }
+
+    ADC1->CR |= ADC_CR_ADSTART;
+
+
+}
+void SetUpDAC(void){
+    GPIOA->MODER |= (0x3 << 2*5);
+    DAC->SWTRIGR |= 0x2;
+    DAC->CR |= DAC_CR_EN2;
+
+}
