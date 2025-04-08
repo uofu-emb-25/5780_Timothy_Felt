@@ -2,7 +2,7 @@
 #include <stm32f0xx_hal.h>
 
 #undef LAB1
-#define LAB6
+#define LAB7
 
 int main(void)
 {

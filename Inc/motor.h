@@ -49,4 +49,6 @@ void encoder_init(void);
 // Sets up ADC to measure motor current
 void ADC_init(void);
 
+void Lab7_Systick_Callback(void);
+
 #endif /* MOTOR_H_ */

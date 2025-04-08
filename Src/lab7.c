@@ -1,9 +1,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "stm32f4xx.h"
+#include "stm32f0xx.h"
 #include "motor.h"
 #include "SEGGER_RTT.h"
+#include "main.h"
 
 /* -------------------------------------------------------------------------------------------------------------
  *  Global Variable Declarations
@@ -86,13 +87,12 @@ int lab7_main(void) {
     HAL_Init();                             // Initialize HAL internals
     LED_init();                             // Initialize LED's
     button_init();                          // Initialize button
-SEE
     motor_init();                           // Initialize motor code
 
     while (1) {
         GPIOC->ODR ^= GPIO_ODR_9;           // Toggle green LED (heartbeat)
         encoder_count = TIM2->CNT;
-        HAL_Delay(128);                      // Delay 1/8 second
+        HAL_Delay(178);                      // Delay 1/8 second
     }
 }
 
