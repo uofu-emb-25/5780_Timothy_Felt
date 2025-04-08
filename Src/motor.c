@@ -11,8 +11,8 @@ volatile int16_t target_rpm = 800;    	// Desired speed target
 volatile int16_t motor_speed = 0;   	// Measured motor speed
 volatile int8_t adc_value = 0;      	// ADC measured motor current
 volatile int16_t error = 0;         	// Speed error signal
-volatile uint8_t Kp = 1;            	// Proportional gain
-volatile uint8_t Ki = 1;            	// Integral gain
+volatile uint8_t Kp = 3;            	// Proportional gain
+volatile uint8_t Ki = 5;            	// Integral gain
 
 // Sets up the entire motor drive system
 void motor_init(void) {
