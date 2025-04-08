@@ -7,7 +7,7 @@
 
 volatile int16_t error_integral = 0;    // Integrated error signal
 volatile uint8_t duty_cycle = 0;    	// Output PWM duty cycle
-volatile int16_t target_rpm = 0;    	// Desired speed target
+volatile int16_t target_rpm = 800;    	// Desired speed target
 volatile int16_t motor_speed = 0;   	// Measured motor speed
 volatile int8_t adc_value = 0;      	// ADC measured motor current
 volatile int16_t error = 0;         	// Speed error signal
@@ -138,7 +138,7 @@ void TIM6_DAC_IRQHandler(void) {
     
     // Call the PI update function
     PI_update();
-    log_data();
+    //log_data();
     TIM6->SR &= ~TIM_SR_UIF;        // Acknowledge the interrupt
 }
 
@@ -189,12 +189,17 @@ void PI_update(void) {
      *       I recommend converting to whatever units result in larger values, gives
      *       more resolution.
      */
-    
-    
+    error = target_rpm - (motor_speed*60)/3200;
     /// TODO: Calculate integral portion of PI controller, write to "error_integral" variable
-    
+    error_integral = Ki*error+error_integral;
     /// TODO: Clamp the value of the integral to a limited positive range
-    
+    if (error_integral > 3200){
+        error_integral = 3200;
+    }
+    else if (error_integral < 0){
+        error_integral = 0;
+    }
+
     /* Hint: The value clamp is needed to prevent excessive "windup" in the integral.
      *       You'll read more about this for the post-lab. The exact value is arbitrary
      *       but affects the PI tuning.
@@ -203,7 +208,7 @@ void PI_update(void) {
     
     /// TODO: Calculate proportional portion, add integral and write to "output" variable
     
-    int16_t output = 0; // Change this!
+    int16_t output = Kp*error + error_integral; // Change this!
     
     /* Because the calculated values for the PI controller are significantly larger than 
      * the allowable range for duty cycle, you'll need to divide the result down into 
@@ -222,9 +227,14 @@ void PI_update(void) {
      */
 
      /// TODO: Divide the output into the proper range for output adjustment
-     
+     output = output >> 5;
      /// TODO: Clamp the output value between 0 and 100 
-    
+     if (error_integral > 100){
+        error_integral = 100;
+    }
+    else if (error_integral < 0){
+        error_integral = 0;
+    }
     pwm_setDutyCycle(output);
     duty_cycle = output;            // For debug viewing
 

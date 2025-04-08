@@ -74,8 +74,8 @@ void PendSV_Handler(void)
   */
 void SysTick_Handler(void)
 {
-  Lab7_Systick_Callback();
   HAL_IncTick();
+  Lab7_Systick_Callback();
   /*myCount += 1;
   if(myCount == 200){
   My_HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_7);
